@@ -1,25 +1,58 @@
-import logo from './logo.svg';
-import './App.css';
+import React from 'react';
+import {TransitionGroup, CSSTransition} from 'react-transition-group';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+class App extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { items: ['BlockChain', 'ReactJS', 'TypeScript', 'JavaTpoint'] };
+    this.handleAdd = this.handleAdd.bind(this);
+  }
+
+  handleAdd() {
+    const newItems = this.state.items.concat([
+      prompt('Enter Item Name')
+    ]);
+    this.setState({items: newItems});
+  }
+
+  handleRemove(i) {
+    let newItems = this.state.items.slice();
+    newItems.splice(i, 1);
+    this.setState({items: newItems});
+  }
+
+  render() {
+    const FadeTransition = (props) => {
+      return (
+        <CSSTransition
+          {...props}
+          classNames="example"
+          timeout={{ enter: 1000, exit: 1500 }} />
+      )
+    }
+
+    const items = this.state.items.map((item, i) => {
+      return (
+        <FadeTransition key={i}>
+          <div key={i} onClick={() => this.handleRemove(i)}>
+            {item}
+          </div>
+        </FadeTransition>
+      )
+    });
+
+    return (
+      <div>
+        <h1>Animation Example</h1>
+        <button onClick={this.handleAdd}>Insert Item</button>
+        <br /><br />
+        <TransitionGroup>
+          {items}
+        </TransitionGroup>
+        
+      </div>
+    );
+  }
 }
 
 export default App;
